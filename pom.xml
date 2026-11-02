@@ -27,8 +27,8 @@
               <version>1.18.48</version>
             </path>
           </annotationProcessorPaths>
-          <source>11</source>
-          <target>11</target>
+          <source>15</source>
+          <target>15</target>
         </configuration>
       </plugin>
     </plugins>
@@ -62,6 +62,12 @@
       <version>1.18.48</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter</artifactId>
+          <version>RELEASE</version>
+          <scope>test</scope>
+      </dependency>
 
 
   </dependencies>

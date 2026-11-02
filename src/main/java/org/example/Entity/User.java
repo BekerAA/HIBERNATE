@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @Builder
 @Entity
-@Table(name = "user")
+@Table(name = "user", schema = "tables")
 public class User {
     @Id
     private int id;
