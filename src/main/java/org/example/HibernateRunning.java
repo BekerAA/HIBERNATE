@@ -17,16 +17,22 @@ public class HibernateRunning {
         configuration.addAttributeConverter(new BirthdayConverter(), true);
         try (SessionFactory sessionFactory = configuration.buildSessionFactory();
              Session session = sessionFactory.openSession()) {
-
-            session.beginTransaction();
             User user = User.builder()
-                    .name("Igori")
-                    .lastname("Gidulinov")
-                    .birthday( new Birthday(LocalDate.of(2003, 7, 23)))
-                    .role(Role.ADMIN)
+                    .id(6)
+                    .name("Stas")
+                    .lastname("Karpov")
+                    .birthday( new Birthday(LocalDate.of(1999, 1, 1)))
+                    .role(Role.USER)
                     .build();
-
-            session.save(user);
+            session.beginTransaction();
+            //Операция сохранения
+            //session.save(user);
+            //Операция обновления
+            //session.saveOrUpdate(user);
+            //Операция удаления
+            //session.delete(user);
+            User user1 = session.get(User.class, 1);
+            System.out.println(user1.toString());
             session.getTransaction().commit();
         }
     }
