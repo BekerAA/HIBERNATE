@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Entity.Role;
 import org.example.Entity.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,10 +18,11 @@ public class HibernateRunning {
 
             session.beginTransaction();
             User user = User.builder()
-                    .name("Andrey")
-                    .lastname("Pushkov")
-                    .birthDate(LocalDate.of(2003, 8, 1))
-                    .age((int) LocalDate.now().getYear() - LocalDate.of(2003, 8, 1).getYear())
+                    .name("Igori")
+                    .lastname("Gidulinov")
+                    .birthDate(LocalDate.of(2003, 7, 23))
+                    .age(LocalDate.now().getYear() - LocalDate.of(2003, 7, 23).getYear())
+                    .role(Role.ADMIN)
                     .build();
 
             session.save(user);
