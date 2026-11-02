@@ -1,6 +1,7 @@
 package org.example.Entity;
 
 import lombok.*;
+import org.example.converter.BirthdayConverter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,9 +21,9 @@ public class User {
     private int id;
     private String name;
     private String lastname;
+    @Convert(converter = BirthdayConverter.class)
     @Column(name = "birth_date")
-    private LocalDate birthDate;
-    private int age;
+    private Birthday birthday;
     @Enumerated(EnumType.STRING)
     private Role role;
 }
