@@ -19,11 +19,15 @@ import java.time.LocalDate;
 public class User {
     @Id
     private int id;
+
     private String name;
+
     private String lastname;
+
     @Convert(converter = BirthdayConverter.class)
     @Column(name = "birth_date")
     private Birthday birthday;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 }

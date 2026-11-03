@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Entity.Birthday;
+import org.example.Entity.Role;
 import org.example.Entity.User;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +26,8 @@ class HibernateRunningTest {
         User user = User.builder()
                 .name("Larisa")
                 .lastname("Acopin")
-                .birthDate(LocalDate.of(2004, 12, 21))
-                .age(LocalDate.now().getYear() - LocalDate.of(2004, 12, 21).getYear())
+                .birthday( new Birthday (LocalDate.of(2004, 12, 21)))
+                .role(Role.CREATED)
                 .build();
 
         var sql ="""
