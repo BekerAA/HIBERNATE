@@ -1,6 +1,6 @@
 package org.example.converter;
 
-import org.example.Entity.Birthday;
+import org.example.Entity.NoEntity.Birthday;
 
 import javax.persistence.AttributeConverter;
 import java.sql.Date;

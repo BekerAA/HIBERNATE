@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.Entity.Birthday;
-import org.example.Entity.Role;
+import org.example.Entity.NoEntity.Birthday;
+import org.example.Entity.NoEntity.Role;
 import org.example.Entity.User;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +16,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HibernateRunningTest {
     @Test

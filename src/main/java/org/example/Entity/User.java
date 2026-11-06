@@ -1,33 +1,32 @@
 package org.example.Entity;
 
 import lombok.*;
+import org.example.Entity.NoEntity.Birthday;
+import org.example.Entity.NoEntity.Role;
 import org.example.converter.BirthdayConverter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
 @Builder
 @Entity
-@Table(name = "user", schema = "tables")
+@Table(name = "users", schema = "tables")
 public class User {
     @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private String username;
 
-    private String lastname;
-
-    @Convert(converter = BirthdayConverter.class)
-    @Column(name = "birth_date")
-    private Birthday birthday;
+    @Embedded
+    private PersonalInfo personalInfo;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "company_id")
+    private Integer companyId;
 }
