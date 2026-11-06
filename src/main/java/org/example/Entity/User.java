@@ -27,6 +27,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "company_id")
-    private Integer companyId;
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "company_id")
+    private Company company;
 }
