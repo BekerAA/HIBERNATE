@@ -1,8 +1,12 @@
 package org.example;
 
+import lombok.Cleanup;
+import org.example.Entity.Company;
 import org.example.Entity.NoEntity.Birthday;
 import org.example.Entity.NoEntity.Role;
+import org.example.Entity.PersonalInfo;
 import org.example.Entity.User;
+import org.example.utils.HibernateUtil;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.Column;
@@ -18,51 +22,131 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class HibernateRunningTest {
-    @Test
-    public void testConnectHibernate(){
 
-        User user = User.builder()
-                .name("Larisa")
-                .lastname("Acopin")
-                .birthday( new Birthday (LocalDate.of(2004, 12, 21)))
-                .role(Role.CREATED)
+    @Test
+    public void saveUserDB(){
+
+        User userTest = User.builder()
+                .username("Igor Gidulinov")
+                .personalInfo(PersonalInfo.builder()
+                        .firstname("Igor")
+                        .lastname("Gidulinov")
+                        .birthday(new Birthday(LocalDate.of(2003,7,23)))
+                        .build())
+                .role(Role.USER)
+                .company(null)
                 .build();
 
-        var sql ="""
-                INSERT INTO
-                %s
-                (%s)
-                values
-                (%s)
-                """;
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
 
-        var tableName = Optional.ofNullable(user.getClass().getAnnotation(Table.class))
-                .map(table -> table.schema() + "." + table.name())
-                .orElse(user.getClass().getName());
-
-        Field[] fields = user.getClass().getDeclaredFields();
-        var columnName = Arrays.stream(fields)
-                .map( field -> Optional.ofNullable(field.getAnnotation(Column.class))
-                        .map(Column::name)
-                        .orElse(field.getName())
-                ).collect(Collectors.joining(", "));
+        session.beginTransaction();
+        session.save(userTest);
+        session.getTransaction().commit();
+    }
 
 
-        var columnValue = Arrays.stream(fields).map(field -> "?").collect(Collectors.joining(", "));
+    @Test
+    public void saveCompanyDB(){
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/tables", "andrey", "14555555");
-            PreparedStatement preparedStatement = connection.prepareStatement(sql.formatted(tableName, columnName, columnValue)))
-        {
-            for (int i = 0; i < fields.length; i++) {
-                fields[i].setAccessible(true);
-                preparedStatement.setObject(i + 1, fields[i].get(user));
-            }
-            preparedStatement.executeUpdate();
-        }catch (SQLException | IllegalAccessException e){
-            throw new RuntimeException(e);
-        }
+        Company companyTest = Company.builder().name("RIDAN").build();
+
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+        session.save(companyTest);
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void saveUserAndCompanyDB(){
+
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+        User userTest = User.builder()
+                .username("Igor Gidulinov")
+                .personalInfo(PersonalInfo.builder()
+                        .firstname("Igor")
+                        .lastname("Gidulinov")
+                        .birthday(new Birthday(LocalDate.of(2003,7,23)))
+                        .build())
+                .role(Role.USER)
+                .company(session.get(Company.class, 1))
+                .build();
+        session.persist(userTest);
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void getUserDB(){
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+        User user = session.get(User.class, 1);
+        session.getTransaction().commit();
+    }
+
+
+
+    @Test
+    public void checkOneToMany(){
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company companyTest = session.get(Company.class, 1);
+        System.out.println(companyTest.getUsers());
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void addCompanyAndUserDB(){
+
+        User userTest = User.builder()
+                .username("Mark Mashinin")
+                .personalInfo(PersonalInfo.builder()
+                        .firstname("Mark")
+                        .lastname("Mashinin")
+                        .birthday(new Birthday(LocalDate.of(2015,7,4)))
+                        .build())
+                .role(Role.USER)
+                .build();
+
+        Company companyTest = Company.builder().name("GlowByte").build();
+
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        companyTest.addUser(userTest);
+        session.persist(companyTest);
+
+        session.getTransaction().commit();
+
 
     }
 
+    @Test
+    public void checkOrphanRemoval(){
+
+        @Cleanup var sessionFactory = HibernateUtil.getSessionFactory();
+        @Cleanup var session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        Company companyTest = session.get(Company.class,  1);
+        companyTest.getUsers().removeIf(user -> user.getId().equals(6));
+
+        session.getTransaction().commit();
+
+
+    }
 
 }

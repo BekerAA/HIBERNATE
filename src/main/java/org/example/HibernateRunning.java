@@ -16,14 +16,9 @@ import static java.time.LocalDate.*;
 
 public class HibernateRunning {
     static void main() {
-
-
         try (SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
              Session session = sessionFactory.openSession()) {
-
             session.beginTransaction();
-
-
             session.getTransaction().commit();
         }
     }
